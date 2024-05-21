@@ -1,6 +1,12 @@
 import torch.nn as nn
 
 
+# DEPRECATED
+# Use configs/*.yml instead
+
+
+
+
 class config_cartpole:
     def __init__(self, use_baseline, ppo, seed):
         self.env_name = "CartPoleBulletEnv-v1"
@@ -149,6 +155,12 @@ class config_balloon:
         self.num_batches = 200  # number of batches trained on
         self.batch_size = 10000  # number of steps used to compute each policy update
         self.max_ep_len = 1000  # maximum episode length
+
+        self.num_iters = 10
+        self.num_episodes = 50
+        self.max_episode_length = 960
+
+
         self.learning_rate = 3e-2
         self.gamma = 0.9  # the discount factor
         self.use_baseline = use_baseline

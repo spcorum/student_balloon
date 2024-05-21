@@ -8,6 +8,12 @@ from network_utils import build_mlp, device, np2torch
 from policy import CategoricalPolicy, GaussianPolicy
 
 
+# DEPRECATED
+# Leftover from the hw
+
+
+
+
 class PolicyGradient(object):
     """
     Class for implementing a policy gradient algorithm

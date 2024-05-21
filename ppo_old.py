@@ -9,100 +9,21 @@ from general import get_logger, Progbar, export_plot
 from baseline_network import BaselineNetwork
 from network_utils import build_mlp, device, np2torch
 from policy import CategoricalPolicy, GaussianPolicy
-from balloon_agent import BalloonAgent
+from policy_gradient import PolicyGradient
 
 
-def extend_array(x, y):
-    if x is None:
-        return y
-    else:
-        return np.concatenate([x,y], axis=0)
+# DEPRECATED
+# This is the old PPO implementation from the hw
 
 
 
 
-class PPO(BalloonAgent):
+class PPO(PolicyGradient):
 
-
-    def init_policy(self):
-        self.lr = self.config.learning_rate
-        self.baseline_network = BaselineNetwork(self.env, self.config)
-        network = build_mlp(self.observation_dim, self.action_dim, self.config.n_layers, self.config.layer_size)
-        network = network.to(device)
-        if self.discrete:
-            self.policy = CategoricalPolicy(network)
-        else:
-            self.policy = GaussianPolicy(network, self.action_dim)
-        self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=self.lr)
-
-
-    def get_action(self, reward, observation):
-        a, logprob = self.policy.act(observation.reshape(1, *observation.shape), return_log_prob=True)
-        if self.training:
-            self.ep_states.append(observation)
-            self.ep_actions.append(a[0])
-            self.ep_rewards.append(reward)
-            self.ep_logprobs.append(logprob[0])
-        return a
-
-    def begin_episode(self, observation):
-        a, logprob = self.policy.act(observation.reshape(1, *observation.shape), return_log_prob=True)
-        if self.training:
-            self.ep_states = [observation]
-            self.ep_actions = [a[0]]
-            self.ep_rewards = []
-            self.ep_logprobs = [logprob[0]]
-        return a
-
-    def end_episode(self, reward, terminal):
-        if self.training:
-            self.ep_rewards.append(reward)
-            ep_returns = self.get_returns(self.ep_rewards)
-            ep_adv = self.get_advantages(ep_returns, self.ep_states)
-            self.iter_states = extend_array(self.iter_states, np.array(self.ep_states))
-            self.iter_actions = extend_array(self.iter_actions, np.array(self.ep_actions))
-            #self.iter_rewards = extend_array(self.iter_rewards, np.array(self.ep_rewards))
-            self.iter_logprobs = extend_array(self.iter_logprobs, np.array(self.ep_logprobs))
-            self.iter_returns = extend_array(self.iter_returns, np.array(ep_returns))
-            self.iter_adv = extend_array(self.iter_adv, ep_adv)
-    
-    def begin_iteration(self):
-        if self.training:
-            self.iter_states = None
-            self.iter_actions = None
-            #self.iter_rewards = None
-            self.iter_logprobs = None
-            self.iter_returns = None
-            self.iter_adv = None
-    
-    def end_iteration(self):
-        if self.training:
-
-            for _ in range(self.config.update_steps):
-                self.baseline_network.update_baseline(self.iter_returns, self.iter_states)
-                self.update_policy(self.iter_states, self.iter_actions, self.iter_adv, self.iter_logprobs)
-
-    def get_returns(self, rewards):
-        returns = [rewards[-1]]
-        for i in reversed(range(0, len(rewards)-1)):
-            returns.append(rewards[i] + self.config.discount * returns[-1])
-        returns = returns[::-1]
-        return returns
-
-    def get_advantages(self, returns, states):
-        advantages = self.baseline_network.calculate_advantage(np.array(returns), np.array(states))
-        if self.config.normalize_advantage:
-            mean = advantages.mean()
-            std = advantages.std()
-            if std > 0.0:
-                advantages = (advantages - mean) / std
-            else:
-                advantages = advantages - mean
-        return advantages
-
-
-
-
+    def __init__(self, env, config, seed, logger=None):
+        config.use_baseline = True
+        super(PPO, self).__init__(env, config, seed, logger)
+        self.eps_clip = self.config.eps_clip
 
     def update_policy(self, observations, actions, advantages, old_logprobs):
         """
@@ -131,6 +52,9 @@ class PPO(BalloonAgent):
         advantages = np2torch(advantages)
         old_logprobs = np2torch(old_logprobs)
 
+        #######################################################
+        #########   YOUR CODE HERE - 10-15 lines.   ###########
+
         self.optimizer.zero_grad()
         action_distro = self.policy.action_distribution(observations)
         log_probs = action_distro.log_prob(actions)
@@ -139,16 +63,10 @@ class PPO(BalloonAgent):
         loss.backward()
         self.optimizer.step()
 
+        #######################################################
+        #########          END YOUR CODE.          ############
 
-
-
-
-
-
-
-
-
-    def _train(self):
+    def train(self):
         """
         Performs training
 

@@ -1,5 +1,14 @@
 # -*- coding: UTF-8 -*-
 
+
+# DEPRECATED
+# Use train.py or eval.py instead
+print('DEPRECATED')
+print('Use train.py or eval.py instead')
+exit()
+
+
+
 import argparse
 import numpy as np
 import torch
@@ -7,6 +16,7 @@ import gym
 #import pybullet_envs
 from policy_gradient import PolicyGradient
 from ppo import PPO
+from stationseeker import StationSeeker
 from config import get_config
 import random
 
@@ -22,6 +32,7 @@ parser.add_argument(
 parser.add_argument("--baseline", dest="use_baseline", action="store_true")
 parser.add_argument("--no-baseline", dest="use_baseline", action="store_false")
 parser.add_argument("--ppo", dest="ppo", action="store_true")
+parser.add_argument("--station-seeker", dest="station_seeker", action="store_true")
 parser.add_argument("--seed", type=int, default=1)
 
 parser.set_defaults(use_baseline=True)
@@ -36,6 +47,13 @@ if __name__ == "__main__":
 
     config = get_config(args.env_name, args.use_baseline, args.ppo, args.seed)
     env = gym.make(config.env_name)
+
+    if args.ppo:
+        model = PPO(env, config, args.seed)
+    elif args.station_seeker:
+        model = StationSeeker(env, config, args.seed)
+    else:
+        model = PolicyGradient(env, config, args.seed)
+    
     # train model
-    model = PolicyGradient(env, config, args.seed) if not args.ppo else PPO(env, config, args.seed)
     model.run()
