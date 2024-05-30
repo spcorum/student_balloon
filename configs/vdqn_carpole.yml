@@ -1,0 +1,11 @@
+device: cuda
+layer_size: 128
+n_layers: 3
+learning_rate: 0.01
+replay_size: 10000
+eps_init: 0.9
+eps_final: 0.05
+eps_decay_steps: 3000000
+use_random_walk: False
+batch_size: 128
+discount: 1.0

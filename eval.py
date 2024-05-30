@@ -25,11 +25,19 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
     assert isinstance(env.action_space, gym.spaces.Discrete)
     state_dim = env.observation_space.shape[0]
     action_dim = env.action_space.n
+    balloon_state_dim = 4
 
     # We'll need to store them eventually anyway, so just make the arrays now
     all_states = np.zeros((num_iters, max_ep_length+1, state_dim))
     all_actions = np.zeros((num_iters, max_ep_length, action_dim), dtype=int)
     all_rewards = np.zeros((num_iters, max_ep_length))
+    all_balloon_states = np.zeros((num_iters, max_ep_length, balloon_state_dim))
+    def get_balloon_state():
+        bs = env.arena._balloon.state
+        x, y = bs.x.km, bs.y.km
+        power_load = bs.power_load.watts
+        battery_charge = bs.battery_charge.watt_hours
+        return [x, y, power_load, battery_charge]
 
 
     if pbar: T = tqdm(total=num_iters*max_ep_length, desc='Running eval')
@@ -44,6 +52,7 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
         for j in range(max_ep_length):
             all_states[i,j,:] = state
             all_actions[i,j,:] = action
+            all_balloon_states[i,j,:] = get_balloon_state()
 
             state, reward, done, info = env.step(action)
             all_rewards[i,j] = reward
@@ -59,6 +68,7 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
             if pbar: T.update(1)
 
         all_states[i,-1,:] = state
+        all_balloon_states[i,-1,:] = get_balloon_state()
         agent.end_episode(reward, done)
         agent.end_iteration()
 
@@ -73,7 +83,9 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
         'state': all_states,
         'action': all_actions,
         'reward': all_rewards,
-        'twr50': get_twr50(all_states.reshape(-1, state_dim))
+        'twr50': get_twr50(all_states.reshape(-1, state_dim)),
+        'balloon_state': all_balloon_states,
+        'balloon_state_comment': '[x (km), y (km), power_load (watts), battery_charge (watt-hours)]',
     }
 
 
@@ -82,8 +94,8 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--agent', type=str, default='stationseeker',
-                        choices=['stationseeker', 'ppo'])
+    parser.add_argument('--agent', type=str, default='station-seeker',
+                        choices=['station-seeker', 'ppo', 'random-walk', 'perciatelli'])
     parser.add_argument('--config', type=Path, default=None)
     parser.add_argument('--ckpt', type=Path, default=None)
     parser.add_argument('--iters', type=int, default=200)
@@ -118,7 +130,7 @@ if __name__ == '__main__':
     print('TWR50:', results['twr50'])
     
     results_path = args.out_dir / 'eval_results.npy'
-    results['config'] = agent.config
+    results['config'] = dict(**agent.config)
     results['command'] = args.__dict__
     np.save(results_path, results)
     print('Results saved to', results_path)

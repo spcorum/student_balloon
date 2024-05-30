@@ -4,10 +4,16 @@ import yaml
 import gym
 from stationseeker import StationSeeker
 from ppo import PPO
+from random_walk import RandomWalk
+from perciatelli import Perciatelli
+from ble_qrdqn import QRDQN
+#from ble_vdqn import VDQN
+from vdqn import VDQN
 
 
 def get_env(seed):
     return gym.make('BalloonLearningEnvironment-v0')
+    #return gym.make('CartPole-v1')
 
 
 def get_agent(env, agent_name, config, ckpt, seed):
@@ -17,15 +23,35 @@ def get_agent(env, agent_name, config, ckpt, seed):
     else:
         config = {}
 
-    if agent_name == 'stationseeker':
+    if agent_name == 'station-seeker':
         if ckpt is not None:
-            print('Warning: The "stationseeker" agent does not support checkpoints')
+            print('Warning: The "station-seeker" agent does not support checkpoints')
         return StationSeeker(env, **config)
     elif agent_name == 'ppo':
         a = PPO(env, **config)
         if ckpt is not None:
             a.load(ckpt)
         return a
+    elif agent_name == 'random-walk':
+        if ckpt is not None:
+            print('Warning: The "random-walk" agent does not support checkpoints')
+        return RandomWalk(env, **config)
+    elif agent_name == 'perciatelli':
+        if ckpt is not None:
+            print('Warning: The "perciatelli" agent does not support checkpoints')
+        return Perciatelli(env, **config)
+    elif agent_name == 'qrdqn':
+        a = QRDQN(env, **config)
+        if ckpt is not None:
+            a.load(ckpt)
+        return a
+    elif agent_name == 'vdqn':
+        a = VDQN(env, **config)
+        if ckpt is not None:
+            a.load(ckpt)
+        return a
+
+
 
 
 def get_station_distance(state: np.array):
