@@ -53,13 +53,13 @@ class VDQN(BalloonAgent):
 
 
     def get_action(self, reward, observation):
-        self.replaybuffer.push(torch.from_numpy(self.last_state_action[0]),
-                               torch.tensor([self.last_state_action[1]]),
-                               torch.from_numpy(observation),
-                               torch.tensor([reward]))
+        if self.training:
+            self.replaybuffer.push(torch.from_numpy(self.last_state_action[0]),
+                                   torch.tensor([self.last_state_action[1]]),
+                                   torch.from_numpy(observation),
+                                   torch.tensor([reward]))
 
-        eps = self.eps.step()
-        if np.random.random() < eps:
+        if self.training and np.random.random() < self.eps.step():
             if self.explorer:
                 action = self.explorer.step(reward, observation)
             else:
@@ -77,8 +77,7 @@ class VDQN(BalloonAgent):
     def begin_episode(self, observation):
         if self.explorer:
             explorer_action = self.explorer.begin_episode(observation)
-        eps = self.eps.step()
-        if np.random.random() < eps:
+        if self.training and np.random.random() < self.eps.step():
             if self.explorer:
                 action = explorer_action
             else:
@@ -94,10 +93,11 @@ class VDQN(BalloonAgent):
 
 
     def end_episode(self, observation, reward, terminal):
-        self.replaybuffer.push(torch.from_numpy(self.last_state_action[0]),
-                               torch.tensor([self.last_state_action[1]]),
-                               None if terminal else torch.from_numpy(observation),
-                               torch.tensor([reward]))
+        if self.training:
+            self.replaybuffer.push(torch.from_numpy(self.last_state_action[0]),
+                                   torch.tensor([self.last_state_action[1]]),
+                                   None if terminal else torch.from_numpy(observation),
+                                   torch.tensor([reward]))
         self.last_state_action = []
         if self.explorer:
             self.explorer.end_episode(reward, terminal)
@@ -110,6 +110,8 @@ class VDQN(BalloonAgent):
         #self.__copy_network(self.actor_network, self.target_network)
 
     def __optimize(self):
+        if not self.training:
+            return
         if len(self.replaybuffer) < self.config.batch_size:
             return
         batch = self.replaybuffer.sample(self.config.batch_size)
