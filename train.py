@@ -50,7 +50,7 @@ def train(env, agent, logger, num_iters, eps_per_iter, max_ep_length, pbar=True,
 
                 if pbar: T.update(1)
 
-            agent.end_episode(reward, done)
+            agent.end_episode(state, reward, done)
             
             logger.info(f'[ITER {i} EPISODE {j}]: Total reward: {total_ep_reward:04.2f}')
             ep_rewards.append(total_ep_reward)
@@ -79,7 +79,8 @@ if __name__ == '__main__':
     parser.add_argument('--max-ep-length', dest='max_ep_length', type=int, default=960)
     parser.add_argument('--out-dir', dest='out_dir', type=Path, default=None)
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--save-freq', dest='save_freq', type=int, default=25)
+    parser.add_argument('--save-freq', dest='save_freq', type=int, default=20)
+    parser.add_argument('--cartpole', action='store_true')
     args = parser.parse_args()
 
     if args.gin_config is not None:
@@ -99,7 +100,7 @@ if __name__ == '__main__':
     torch.random.manual_seed(args.seed)
     random.seed(args.seed)
 
-    env = get_env(args.seed)
+    env = get_env(args.seed) if not args.cartpole else get_env(args.seed, 'CartPole-v1')
     agent = get_agent(env, args.agent, args.config, args.ckpt, args.seed)
     agent.train()
     init_ckpt = 0 if args.ckpt is None else int(args.ckpt.stem.split('-')[-1].split('.')[-1])

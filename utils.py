@@ -11,10 +11,10 @@ from ble_qrdqn import QRDQN
 from vdqn import VDQN
 
 
-def get_env(seed):
-    return gym.make('BalloonLearningEnvironment-v0')
-    #return gym.make('CartPole-v1')
-
+def get_env(seed, env_name='BalloonLearningEnvironment-v0'):
+    env = gym.make(env_name)
+    env.seed(seed)
+    return env
 
 def get_agent(env, agent_name, config, ckpt, seed):
     if config is not None:

@@ -19,6 +19,13 @@ class VDQN(BalloonAgent):
 
     def __copy_network(self, src, dst):
         dst.load_state_dict(src.state_dict())
+
+    def __soft_copy_network(self, src, dst, tau):
+        src_state_dict = src.state_dict()
+        dst_state_dict = dst.state_dict()
+        for key in src_state_dict:
+            dst_state_dict[key] = src_state_dict[key]*tau + dst_state_dict[key]*(1-tau)
+        dst.load_state_dict(dst_state_dict)
     
     def init_policy(self):
         self.device = torch.device(self.config.device)
@@ -33,9 +40,9 @@ class VDQN(BalloonAgent):
             ])
         layers.append(nn.Linear(self.config.layer_size, self.action_dim))
         self.actor_network = nn.Sequential(*layers).to(self.device)     # Actor network that learns
-        #self.target_network = nn.Sequential(*layers).to(self.device)    # Frozen target network for bootstrapping
-        #self.__copy_network(self.actor_network, self.target_network)
-        self.optimizer = torch.optim.Adam(self.actor_network.parameters(), lr=self.config.learning_rate)
+        self.target_network = nn.Sequential(*layers).to(self.device)    # Frozen target network for bootstrapping
+        self.__copy_network(self.actor_network, self.target_network)
+        self.optimizer = torch.optim.AdamW(self.actor_network.parameters(), lr=self.config.learning_rate, amsgrad=True)
 
         self.replaybuffer = ReplayBuffer(self.config.replay_size)
         self.eps = EpsDecay(self.config.eps_init, self.config.eps_final, self.config.eps_decay_steps)
@@ -86,7 +93,11 @@ class VDQN(BalloonAgent):
         return action
 
 
-    def end_episode(self, reward, terminal):
+    def end_episode(self, observation, reward, terminal):
+        self.replaybuffer.push(torch.from_numpy(self.last_state_action[0]),
+                               torch.tensor([self.last_state_action[1]]),
+                               None if terminal else torch.from_numpy(observation),
+                               torch.tensor([reward]))
         self.last_state_action = []
         if self.explorer:
             self.explorer.end_episode(reward, terminal)
@@ -102,19 +113,32 @@ class VDQN(BalloonAgent):
         if len(self.replaybuffer) < self.config.batch_size:
             return
         batch = self.replaybuffer.sample(self.config.batch_size)
+
+        non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
+                                          batch.next_state)), device=self.device, dtype=torch.bool)
+        non_final_next_states = torch.stack([s for s in batch.next_state
+                                                if s is not None]).to(self.device)
+
         state_batch = torch.stack(batch.state).to(self.device)
         action_batch = torch.stack(batch.action).to(self.device)
-        next_state_batch = torch.stack(batch.next_state).to(self.device)
+        #next_state_batch = torch.stack(batch.next_state).to(self.device)
         reward_batch = torch.stack(batch.reward).to(self.device)
         state_action_values = self.actor_network(state_batch).gather(1, action_batch)
+
+        target_state_action_values = torch.zeros(self.config.batch_size, device=self.device)
         with torch.no_grad():
-            target_state_action_values = torch.max(self.actor_network(next_state_batch), dim=1).values
-            target_state_action_values = target_state_action_values * self.config.discount + reward_batch
-        loss = ((state_action_values - target_state_action_values) ** 2).mean()
+            target_state_action_values[non_final_mask] = self.target_network(non_final_next_states).max(1).values
+        target_state_action_values = target_state_action_values * self.config.discount + reward_batch
+
+        #loss = ((state_action_values - target_state_action_values) ** 2).mean()
+        criterion = nn.SmoothL1Loss()
+        loss = criterion(state_action_values, target_state_action_values.unsqueeze(1))
+        
         self.optimizer.zero_grad()
         loss.backward()
         nn.utils.clip_grad_value_(self.actor_network.parameters(), 100)
         self.optimizer.step()
+        self.__soft_copy_network(self.actor_network, self.target_network, self.config.tau)
 
     
 

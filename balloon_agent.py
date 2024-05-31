@@ -51,7 +51,7 @@ class BalloonAgent(nn.Module):
     def begin_episode(self, observation):
         raise NotImplementedError()
 
-    def end_episode(self, reward, terminal):
+    def end_episode(self, observation, reward, terminal):
         raise NotImplementedError()
     
     def begin_iteration(self):

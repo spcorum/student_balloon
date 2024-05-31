@@ -54,7 +54,7 @@ class PPO(BalloonAgent):
             self.ep_logprobs = [logprob[0]]
         return a
 
-    def end_episode(self, reward, terminal):
+    def end_episode(self, state, reward, terminal):
         if self.training:
             self.ep_rewards.append(reward)
             ep_returns = self.get_returns(self.ep_rewards)

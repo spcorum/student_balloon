@@ -117,7 +117,8 @@ if __name__ == '__main__':
 
     env = get_env(args.seed)
     agent = get_agent(env, args.agent, args.config, args.ckpt, args.seed)
-    logger = get_logger(args.out_dir / 'eval_log.txt')
+    init_ckpt = 0 if args.ckpt is None else int(args.ckpt.stem.split('-')[-1].split('.')[-1])
+    logger = get_logger(args.out_dir / f'eval_log_{init_ckpt}.txt')
 
     agent.eval()
     results = eval(env, agent, logger, args.iters, args.max_ep_length)
@@ -129,7 +130,7 @@ if __name__ == '__main__':
     print('Average episode reward:', ep_rewards.mean(), '+/-', ep_rewards.std())
     print('TWR50:', results['twr50'])
     
-    results_path = args.out_dir / 'eval_results.npy'
+    results_path = args.out_dir / f'eval_results_{init_ckpt}.npy'
     results['config'] = dict(**agent.config)
     results['command'] = args.__dict__
     np.save(results_path, results)
