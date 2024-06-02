@@ -69,7 +69,7 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
 
         all_states[i,-1,:] = state
         all_balloon_states[i,-1,:] = get_balloon_state()
-        agent.end_episode(reward, done)
+        agent.end_episode(state, reward, done)
         agent.end_iteration()
 
         logger.info(f'[EPISODE {i}]: Total reward: {all_rewards[i].sum():04.2f}')
@@ -94,8 +94,8 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--agent', type=str, default='station-seeker',
-                        choices=['station-seeker', 'ppo', 'random-walk', 'perciatelli'])
+    parser.add_argument('--agent', type=str, default='station-seeker' )#,
+                        #choices=['station-seeker', 'ppo', 'random-walk', 'perciatelli'])
     parser.add_argument('--config', type=Path, default=None)
     parser.add_argument('--ckpt', type=Path, default=None)
     parser.add_argument('--iters', type=int, default=200)

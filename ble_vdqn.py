@@ -55,7 +55,7 @@ class VDQN(BalloonAgent):
             action = self._exploration_wrapper.begin_episode(observation, action)
         return action
 
-    def end_episode(self, reward, terminal):
+    def end_episode(self, state, reward, terminal):
         self.policy.end_episode(reward, terminal)
 
     def begin_iteration(self):
