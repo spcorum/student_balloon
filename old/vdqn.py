@@ -5,7 +5,7 @@ from balloon_learning_environment.agents.random_walk_agent import RandomWalkAgen
 from balloon_agent import BalloonAgent
 
 from replaybuffer import ReplayBuffer
-from eps_decay import EpsDecay
+from decay import EpsDecay
 
 from pathlib import Path
 import numpy as np

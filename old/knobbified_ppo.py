@@ -116,7 +116,7 @@ class KnobbifiedPPO(BalloonAgent):
         pass
     
     def end_iteration(self):
-        pass
+        self.optimize()
 
     def _put_data(self, s, a, r, s_next, logprob_a, done, dw, idx):
         self.s_hoder[idx] = s

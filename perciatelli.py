@@ -19,7 +19,7 @@ class Perciatelli(BalloonAgent):
         return self.p.begin_episode(observation)
 
 
-    def end_episode(self, reward, terminal):
+    def end_episode(self, observation, reward, terminal):
         return self.p.end_episode(reward, terminal)
     
     

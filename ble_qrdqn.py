@@ -92,7 +92,7 @@ class QRDQN(BalloonAgent):
     def load(self, ckpt_path):
         ckpt_path = Path(ckpt_path)
         checkpoint_dir = str(ckpt_path.parent)
-        iteration_number = int(ckpt_path.stem.split('-')[-1].split('.')[-1])
+        iteration_number = int(ckpt_path.stem.split('-')[-1].split('.')[-1].split('_')[-1])
         dopamine_utils.load_checkpoint(
             checkpoint_dir, iteration_number,
             functools.partial(JaxQuantileAgent.unbundle, self.policy))
@@ -102,5 +102,5 @@ class QRDQN(BalloonAgent):
         self.policy.eval_mode = False
 
     def eval(self):
-        super().eval()
+        super().train(False)
         self.policy.eval_mode = True

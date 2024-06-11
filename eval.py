@@ -8,6 +8,7 @@ from pathlib import Path
 from tqdm import tqdm
 from general import get_logger, Progbar, export_plot
 from utils import get_agent, get_env, get_twr50
+import gin
 
 
     
@@ -25,7 +26,7 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
     assert isinstance(env.action_space, gym.spaces.Discrete)
     state_dim = env.observation_space.shape[0]
     action_dim = env.action_space.n
-    balloon_state_dim = 4
+    balloon_state_dim = 5
 
     # We'll need to store them eventually anyway, so just make the arrays now
     all_states = np.zeros((num_iters, max_ep_length+1, state_dim))
@@ -37,7 +38,8 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
         x, y = bs.x.km, bs.y.km
         power_load = bs.power_load.watts
         battery_charge = bs.battery_charge.watt_hours
-        return [x, y, power_load, battery_charge]
+        altitude = env.arena._atmosphere.at_pressure(bs.pressure).height.km
+        return [x, y, power_load, battery_charge, altitude]
 
 
     if pbar: T = tqdm(total=num_iters*max_ep_length, desc='Running eval')
@@ -85,7 +87,7 @@ def eval(env, agent, logger, num_iters, max_ep_length, pbar=True):
         'reward': all_rewards,
         'twr50': get_twr50(all_states.reshape(-1, state_dim)),
         'balloon_state': all_balloon_states,
-        'balloon_state_comment': '[x (km), y (km), power_load (watts), battery_charge (watt-hours)]',
+        'balloon_state_comment': '[x (km), y (km), power_load (watts), battery_charge (watt-hours), altitude (km)]',
     }
 
 
@@ -102,7 +104,11 @@ if __name__ == '__main__':
     parser.add_argument('--max-ep-length', dest='max_ep_length', type=int, default=960)
     parser.add_argument('--out-dir', dest='out_dir', type=Path, default=None)
     parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--gin-config', dest='gin_config', type=Path, default=None)
     args = parser.parse_args()
+
+    if args.gin_config is not None:
+        gin.parse_config_file(args.gin_config)
 
     if args.out_dir is None:
         if args.ckpt is None:
@@ -117,7 +123,7 @@ if __name__ == '__main__':
 
     env = get_env(args.seed)
     agent = get_agent(env, args.agent, args.config, args.ckpt, args.seed)
-    init_ckpt = 0 if args.ckpt is None else int(args.ckpt.stem.split('-')[-1].split('.')[-1])
+    init_ckpt = 0 if args.ckpt is None else int(args.ckpt.stem.split('-')[-1].split('.')[-1].split('_')[-1])
     logger = get_logger(args.out_dir / f'eval_log_{init_ckpt}.txt')
 
     agent.eval()

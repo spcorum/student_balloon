@@ -1,0 +1,12 @@
+tau: 0.005
+gamma: 0.993
+alpha: 1.0
+n_layers: 8
+hidden_size: 600
+n_step: 3
+avg_q: false
+clip_q: false
+clip_q_epsilon: 0.5
+entropy_penalty: false
+entropy_penalty_beta: 0.5
+rew_norm: false

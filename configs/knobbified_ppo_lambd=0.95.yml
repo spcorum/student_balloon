@@ -1,0 +1,15 @@
+gamma: 0.993
+lambd: 0.95    # try 0.9, 0.95, 1.0
+entropy_coef: 0.01      # try 0.001, 0.005, 0.01
+entropy_coef_decay: 0.999     # maybe try 0.99
+batch_size: 32
+steps_until_update: 4800      # steps_per_episode * episodes_per_GD = 960 * 5 = 4800
+actor_layer_size: 600
+critic_layer_size: 600
+n_actor_layers: 8
+n_critic_layers: 8
+update_steps: 100 # ?
+eps_clip: 0.2     # try 0.1, 0.2, 0.3
+l2_reg: 0.0
+normalize_advantage: True
+learning_rate: 0.00001

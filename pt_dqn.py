@@ -40,7 +40,9 @@ if True:
     NUM_EPS = 5*400
     EPS_LENGTH = 960
     CKPT_STEPS = 20
-    OUT_PATH = './results/pt_dqn_ours_2k'
+    CKPT = './results/pt_dqn_ours_2k/ckpt-1999.pt'
+    ITERS_START = 2000
+    OUT_PATH = './results/pt_dqn_ours_3k'
 
 else:
     BATCH_SIZE = 128
@@ -56,6 +58,8 @@ else:
     NUM_EPS = 1000
     EPS_LENGTH = 960
     CKPT_STEPS = 10
+    CKPT = None
+    ITERS_START = 0
     OUT_PATH = './results/pt_dqn_original_long'
 
 os.makedirs(OUT_PATH, exist_ok=True)
@@ -126,6 +130,9 @@ class Model(nn.Module):
         self.target_net.load_state_dict(self.policy_net.state_dict())
 model = Model()
 model.to(device)
+if CKPT is not None:
+    sd = torch.load(CKPT)
+    model.load_state_dict(sd)
 
 optimizer = optim.AdamW(model.policy_net.parameters(), lr=LR, amsgrad=True)
 memory = ReplayMemory(REPLAY_SIZE)
@@ -280,11 +287,11 @@ for i_episode in tqdm(range(num_episodes)):
     print(' Total reward:', total_reward.cpu().item())
     total_rewards.append(total_reward.cpu().item())
     if i_episode != 0 and (i_episode % CKPT_STEPS == 0 or i_episode == num_episodes-1):
-        torch.save(model.state_dict(), f'{OUT_PATH}/ckpt-{i_episode}.pt')
+        torch.save(model.state_dict(), f'{OUT_PATH}/ckpt-{ITERS_START+i_episode}.pt')
 
 
 print('Complete')
-np.save(f'{OUT_PATH}/train_rewards_{NUM_EPS}.npy', np.array(total_rewards))
+np.save(f'{OUT_PATH}/train_rewards_{ITERS_START+NUM_EPS}.npy', np.array(total_rewards))
 plot_durations(show_result=True)
 plt.ioff()
 plt.show()

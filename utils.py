@@ -7,10 +7,11 @@ from ppo import PPO
 from random_walk import RandomWalk
 from perciatelli import Perciatelli
 from ble_qrdqn import QRDQN
-from ble_vdqn import VDQN as BLE_VDQN
-from vdqn import VDQN
+from old.ble_vdqn import VDQN as BLE_VDQN
+from old.vdqn import VDQN
 from pt_dqn_eval_wrapper import PtDQNEvalWrapper as PT_DQN
-from knobbified_ppo import KnobbifiedPPO
+from old.knobbified_ppo import KnobbifiedPPO
+from revisiting_dsac_eval_wrapper import RevisitingDSacEvalWrapper
 
 
 def get_env(seed, env_name='BalloonLearningEnvironment-v0'):
@@ -64,6 +65,11 @@ def get_agent(env, agent_name, config, ckpt, seed):
         return a
     elif agent_name == 'knob_ppo':
         a = KnobbifiedPPO(env, **config)
+        if ckpt is not None:
+            a.load(ckpt)
+        return a
+    elif agent_name == 'dsac':
+        a = RevisitingDSacEvalWrapper(env, **config)
         if ckpt is not None:
             a.load(ckpt)
         return a
