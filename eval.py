@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
     if args.out_dir is None:
         if args.ckpt is None:
-            args.out_dir = Path(f'./results/{args.agent}_seed={args.seed}')
+            args.out_dir = Path(f'./results/{args.agent}')
         else:
             args.out_dir = args.ckpt.parent
     if args.out_dir.exists():

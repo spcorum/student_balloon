@@ -26,6 +26,8 @@ import torch.nn.functional as F
 import numpy as np
 import os
 
+import argparse
+
 
 
 # BATCH_SIZE is the number of transitions sampled from the replay buffer
@@ -52,8 +54,14 @@ if True:
     EPS_LENGTH = 960
     CKPT_STEPS = 20
     CKPT = None     # str
-    ITERS_START = 2000
+    ITERS_START = 0
     OUT_PATH = './results/pt_dqn'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--out-dir', default=None)
+    args = parser.parse_args()
+    if args.out_dir is not None:
+        OUT_PATH = args.out_dir
 
 else:
     BATCH_SIZE = 128
