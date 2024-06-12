@@ -1,3 +1,14 @@
+
+#
+# This is the DQN implementation we adapted. This is the unmodified version
+# intended for the cartpole environment.
+# Adapted from:
+# - https://github.com/pytorch/tutorials/blob/main/intermediate_source/reinforcement_q_learning.py
+#
+# The version modified for the balloon environment is pt_dqn.py.
+#
+
+
 import gymnasium as gym
 import math
 import random

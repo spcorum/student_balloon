@@ -1,3 +1,10 @@
+
+#
+# The original policy_gradient.py from CS234 HW2.
+# Unused in this project.
+#
+
+
 import numpy as np
 import torch
 import gym
@@ -6,12 +13,6 @@ from general import get_logger, Progbar, export_plot
 from baseline_network import BaselineNetwork
 from network_utils import build_mlp, device, np2torch
 from policy import CategoricalPolicy, GaussianPolicy
-
-
-# DEPRECATED
-# Leftover from the hw
-
-
 
 
 class PolicyGradient(object):

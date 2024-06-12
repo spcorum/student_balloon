@@ -1,7 +1,13 @@
 
+#
+# Wrapper classes around exponentially and linearly decaying parameters
+#
+
+
 import math
 
 
+# Exponential decay
 class EpsDecay():
 
     def __init__(self,
@@ -24,6 +30,7 @@ class EpsDecay():
         return self.get()
     
 
+# Linear decay
 class LinearDecay():
 
     def __init__(self,

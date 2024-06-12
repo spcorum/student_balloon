@@ -1,9 +1,11 @@
 import torch.nn as nn
 
-
+#
+# This file is modified from the CS234 HW2 starter code
+#
 # DEPRECATED
 # Use configs/*.yml instead
-
+#
 
 
 

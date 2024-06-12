@@ -1,3 +1,19 @@
+
+#
+# This is a second PPO implementation we attempted to adapt, offering more features
+# and hyperparameters for us to tune in accordance with our project mentor's advice.
+# Adapted from:
+# - https://github.com/XinJingHao/PPO-Discrete-Pytorch
+#
+# This model did not work well, so we stuck with our original PPO model (see ppo.py)
+#
+# Arguments: --agent knob_ppo --config configs/old/knobbified_ppo_lambd=1.0.yml
+#
+
+
+
+
+
 import numpy as np
 import torch
 import torch.nn as nn

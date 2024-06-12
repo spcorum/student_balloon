@@ -1,4 +1,17 @@
 
+#
+# This is our initial attempt at vanilla DQN, directly importing the Bellemare model into
+# our base class for our training code.
+# Adapted from:
+# - https://github.com/google/balloon-learning-environment
+#
+# This model did not work well, so we moved to a different DQN implementation (see pt_dqn.py)
+#
+# Arguments: --agent "ble_vdqn" --config configs/old/ble_vdqn.yml --gin-config configs/old/ble_vdqn.gin
+#
+
+
+
 from balloon_learning_environment.agents import agent
 from balloon_learning_environment.agents.quantile_agent import QuantileAgent
 from balloon_learning_environment.agents.marco_polo_exploration import MarcoPoloExploration

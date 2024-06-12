@@ -1,3 +1,11 @@
+
+#
+# This is the original plot.py from CS234 HW2.
+# See plots_milestone.ipynb and plots_final.ipynb instead.
+#
+
+
+
 from collections import defaultdict
 from pathlib import Path
 

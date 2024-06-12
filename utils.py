@@ -1,4 +1,10 @@
 
+#
+# Utils for loading the environment, parsing agent names,
+# and computing some metrics.
+#
+
+
 import numpy as np
 import yaml
 import gym

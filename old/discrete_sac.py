@@ -1,4 +1,16 @@
 
+#
+# This was our first (incomplete) attempt at implementing Discrete SAC ourselves, following
+# the design of the Revisiting Discrete SAC paper:
+# - https://github.com/coldsummerday/Revisiting-Discrete-SAC
+#
+# We found this implementation too demanding (it didn't fit into our existing training code)
+# so we opted to directly use the original repo's code. See Revisiting_Discrete_SAC/
+#
+# **This code is not runnable, but is included for completeness**
+#
+
+
 #from Revisiting_Discrete_SAC.src.libs.discrete_sac import DiscreteSACDevPolicy
 
 import torch
@@ -7,10 +19,6 @@ import torch.nn.functional as F
 from network_utils import build_mlp
 from replaybuffer import PrioritizedReplayBuffer
 from decay import LinearDecay
-
-
-
-
 
 
 class DiscreteSAC(nn.Module):

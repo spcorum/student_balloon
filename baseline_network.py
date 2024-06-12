@@ -1,3 +1,9 @@
+
+#
+# The original baseline_network.py from CS234 HW2.
+# Used in ppo.py.
+#
+
 import numpy as np
 import torch
 import torch.nn as nn

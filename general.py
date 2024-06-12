@@ -1,3 +1,9 @@
+
+#
+# The original general.py from CS234 HW2.
+# Used for utilities such as logging.
+#
+
 import time
 import sys
 import logging

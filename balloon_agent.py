@@ -1,3 +1,11 @@
+
+#
+# The base class for our balloon learning agents.
+# All agents used with train.py or eval.py inherit from this class.
+# Agents that use third party code are still wrapped in a subclass of this class.
+#
+
+
 import numpy as np
 import torch
 import torch.nn as nn

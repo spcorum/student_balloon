@@ -1,4 +1,9 @@
 
+#
+# A wrapper for loading model checkpoints trained with pt_dqn.py for eval.
+#
+# Arguments: --agent pt_dqn --config configs/pt_dqn_ble.yml
+#
 
 import torch
 import torch.nn as nn

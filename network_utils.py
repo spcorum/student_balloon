@@ -1,3 +1,9 @@
+
+#
+# The original network_utils.py from CS234 HW2.
+# Used for utilities such as build_mlp.
+#
+
 import torch
 import torch.nn as nn
 

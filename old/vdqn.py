@@ -1,5 +1,15 @@
 
-# Largely copied from https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+
+#
+# This is the original adaptation of pt_dqn(_original).py that we attempted to use.
+# Unfortunately, this code doesn't train as well as pt_dqn.py, and we haven't figured out why.
+# Adapted from:
+# - https://github.com/pytorch/tutorials/blob/main/intermediate_source/reinforcement_q_learning.py
+#
+# See pt_dqn.py for the version reported in the paper.
+# Arguments: --agent vdqn --config configs/old/vdqn_lr=1e-5.yml
+#
+
 
 from balloon_learning_environment.agents.random_walk_agent import RandomWalkAgent
 from balloon_agent import BalloonAgent

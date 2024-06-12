@@ -1,4 +1,13 @@
 
+#
+# A wrapper around the Perciatelli model from the Bellemare paper,
+# reported as state of the art.
+# - https://github.com/google/balloon-learning-environment
+#
+# Arguments: --agent "perciatelli"
+# (no config required)
+#
+
 from balloon_learning_environment.agents.perciatelli44 import Perciatelli44
 from balloon_agent import BalloonAgent
 

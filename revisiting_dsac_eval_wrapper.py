@@ -1,4 +1,12 @@
 
+#
+# A wrapper for loading model checkpoints trained with the Revisiting
+# Discrete SAC code for eval. See Revisiting_Discrete_SAC/src/balloon_sac.py
+#
+# Arguments: --agent dsac --config configs/revisiting_dsac.yml
+#
+
+
 import sys
 sys.path.append('./Revisiting_Discrete_SAC/src/')
 

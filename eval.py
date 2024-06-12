@@ -1,4 +1,10 @@
 
+#
+# Our eval code.
+# See the agent's code files, utils.py or the README for valid agent names
+# and/or which config files to use.
+#
+
 import numpy as np
 import torch
 import gym

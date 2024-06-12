@@ -1,3 +1,9 @@
+
+#
+# The original policy.py from CS234 HW2.
+# Used by ppo.py.
+#
+
 import torch
 import torch.nn as nn
 import torch.distributions as ptd

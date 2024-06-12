@@ -1,6 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 
+#
+# This is the original main.py from C234 HW2.
+#
+
+
 # DEPRECATED
 # Use train.py or eval.py instead
 print('DEPRECATED')
@@ -14,7 +19,7 @@ import numpy as np
 import torch
 import gym
 #import pybullet_envs
-from policy_gradient import PolicyGradient
+from old.policy_gradient import PolicyGradient
 from ppo import PPO
 from stationseeker import StationSeeker
 from config import get_config

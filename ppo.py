@@ -1,3 +1,10 @@
+
+#
+# PPO, adapted from CS234 HW2 to work with our balloon environment code.
+#
+# Arguments: --agent "ppo" --config configs/ppo_lr=1e-5.yml
+#
+
 import numpy as np
 import torch
 import torch.nn.functional as F

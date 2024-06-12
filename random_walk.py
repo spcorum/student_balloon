@@ -1,4 +1,12 @@
 
+#
+# A wrapper around the RandomWalk model from the Bellemare paper.
+# - https://github.com/google/balloon-learning-environment
+#
+# Arguments: --agent "random-walk"
+# (no config required)
+#
+
 from balloon_learning_environment.agents.random_walk_agent import RandomWalkAgent
 from balloon_agent import BalloonAgent
 

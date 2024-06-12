@@ -1,4 +1,12 @@
 
+#
+# A wrapper around the Station Seeker model from the Bellemare paper.
+# - https://github.com/google/balloon-learning-environment
+#
+# Arguments: --agent "station-seeker"
+# (no config required)
+#
+
 from balloon_learning_environment.agents.station_seeker_agent import StationSeekerAgent
 from balloon_agent import BalloonAgent
 

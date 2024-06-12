@@ -1,4 +1,13 @@
 
+#
+# This is attempt at adapting the BLE's QR-DQN, directly importing the Bellemare model into
+# our base class for our training code.
+# Adapted from:
+# - https://github.com/google/balloon-learning-environment
+#
+# Arguments: --agent "qrdqn" --config configs/ble_qrdqn.yml --gin-config configs/ble_qrdqn.gin
+#
+
 from balloon_learning_environment.agents import agent
 from balloon_learning_environment.agents.quantile_agent import QuantileAgent
 from balloon_learning_environment.agents.marco_polo_exploration import MarcoPoloExploration
@@ -44,7 +53,8 @@ class QRDQN(BalloonAgent):
             summary_writer=None,
             #summary_writing_frequency=500,
             seed=self.config.seed,
-            allow_partial_reload=False,
+            # lets us load the model ckpt even if we don't have the replay buffer
+            allow_partial_reload=True,
         )
         if self.config.explore:
             self._exploration_wrapper = MarcoPoloExploration(

@@ -1,5 +1,7 @@
 
-# Modified from https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+#
+# A replay buffer class, modified from https://github.com/pytorch/tutorials/blob/main/intermediate_source/reinforcement_q_learning.py
+#
 
 from collections import namedtuple, deque
 import random
@@ -34,12 +36,12 @@ class ReplayBuffer(object):
         return len(self.memory)
     
     def save(self, path):
-        return
+        return # unsupported
         with open(path, 'w') as f:
             pickle.dump(dict(fields=self.fields, memory=self.memory), f)
 
     def load(self, path):
-        return
+        return # unsupported
         with open(path, 'r') as f:
             d = pickle.load(f)
         self.Transition = namedtuple('Transition', *d['fields'])
@@ -48,8 +50,11 @@ class ReplayBuffer(object):
 
 
 
+#
+# The following class was written by ChatGPT, but was not used for any models
+# trained for this project.
+#
 
-# Thank you ChatGPT :)
 class PrioritizedReplayBuffer:
     def __init__(self, capacity, alpha=0.6):
         self.capacity = capacity

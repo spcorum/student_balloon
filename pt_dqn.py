@@ -1,3 +1,14 @@
+
+#
+# Our reported vanilla DQN. Adapted from:
+# - https://github.com/pytorch/tutorials/blob/main/intermediate_source/reinforcement_q_learning.py
+#
+# Of the models we trained ourselves, this one performed best. This is the file for training.
+# For eval, see pt_dqn_eval_wrapper.py.
+#
+# To train, run this file directly; this training code is incompatible with train.py.
+#
+
 import gym
 import math
 import random
@@ -40,9 +51,9 @@ if True:
     NUM_EPS = 5*400
     EPS_LENGTH = 960
     CKPT_STEPS = 20
-    CKPT = './results/pt_dqn_ours_2k/ckpt-1999.pt'
+    CKPT = None     # str
     ITERS_START = 2000
-    OUT_PATH = './results/pt_dqn_ours_3k'
+    OUT_PATH = './results/pt_dqn'
 
 else:
     BATCH_SIZE = 128
