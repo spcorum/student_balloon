@@ -4,9 +4,11 @@ Stanford CS234 student project on the topics of reinforcement learning for strat
 ## Environment
 This project uses Google's [Balloon Learning Environment](https://github.com/google/balloon-learning-environment) described in the associated paper ["Autonomous navigation of stratospheric balloons using reinforcement learning"](https://www.nature.com/articles/s41586-020-2939-8).
 
-`pip install balloon_learning_environment`
+```
+pip install balloon_learning_environment
+```
 
-Environment setup can prove finicky and may not work on all machines. See `requirements.txt` for a list of dependencies we found usable on Windows.
+Environment setup can prove finicky and may not work on all machines. See `requirements.txt` for a list of dependencies we found usable on Windows. We recommend Python 3.9.
 
 ## Baselines
 
