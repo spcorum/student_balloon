@@ -10,6 +10,8 @@ pip install balloon_learning_environment
 
 Environment setup can prove finicky and may not work on all machines. See `requirements.txt` for a list of dependencies we found usable on Windows. We recommend Python 3.9.
 
+Any code files inside an `old/` subdirectory are there for completeness/reference, but are not used by any of the four reported models below.
+
 ## Baselines
 
 - **Random Walk** ([Google BLE](https://github.com/google/balloon-learning-environment)) - Randomly samples atmospheric pressures and chooses actions that approach it.
